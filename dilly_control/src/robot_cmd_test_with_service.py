@@ -76,7 +76,7 @@ try:
     # lidar_manager.connect('127.0.0.1', 2368, '')
     gps_manager.connect('', 0, '/gps')
     imu_manager.connect('1', 1, '/imu')
-    coexto5_file = sorted(glob.glob('/home/icas/woowa/src/dilly_control/src/waypoints/sampled/interval/test/*.csv'))
+    coexto5_file = sorted(glob.glob('./waypoints/sampled/interval/test/*.csv'))
     
     #coexto5 = pd.read_csv('/home/icas/woowa/src/dilly_control/src/waypoints/sampled/interval/test/Startto5box.csv')
     cnt_waypoint = 0
