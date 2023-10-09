@@ -1,0 +1,12 @@
+<launch>
+  <!-- Set the ROS master URI (if needed) -->
+  <!-- <arg name="ros_master_uri" default="http://localhost:11311" /> -->
+  <!-- <param name="ros_master_uri" value="$(arg ros_master_uri)" /> -->
+
+  <!-- Start your Python script as a ROS node -->
+  <node name="robot_control_node" pkg="dilly_control" type="robot_cmd_test_with_service.py" output="screen">
+    <!-- Add any necessary command-line arguments here, for example: -->
+    <!-- <param name="param_name" type="string" value="param_value" /> -->
+  </node>
+</launch>
+
