@@ -89,7 +89,7 @@ try:
         #if x == 100:
         gunam_dick = {'Time' : timeline, 'x' : gps_x_timeline, 'y' : gps_y_timeline}
         df = pd.DataFrame(gunam_dick)
-        df.to_csv('/home/icas/Desktop/gps_noise_test.csv')
+        df.to_csv('/home/icas/Desktop/go_1.csv')
         #    break
         
         # if lidar_manager.connChk:

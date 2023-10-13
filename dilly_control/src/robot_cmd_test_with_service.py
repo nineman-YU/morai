@@ -1,4 +1,4 @@
-#!/home/icas/anaconda3/envs/morai/bin/python3
+
 
 import sys, os
 import pandas as pd
@@ -68,6 +68,7 @@ try:
     gps_x_timeline = []
     gps_y_timeline = []
     timeline = []
+
     target_arrived_flag = False
     # lidar_manager = LIDARConnector('UDP')
     gps_manager = GPSConnector('ROS')
@@ -169,6 +170,7 @@ try:
             print("distance : ", dily_to_target_distance)
             if dily_to_target_distance < 1.2:
                 print("Service---------------")
+                ### Speed
                 if (idx == 0 or idx == 2):
                     vel_data.Target_linear_velocity = 0.0
                     vel_data.Target_angular_velocity = 0.0
@@ -176,14 +178,15 @@ try:
                     vel_data.Target_linear_velocity = 2.0
                     vel_data.Target_angular_velocity = -angular_velocity
 
+                ### Service
                 if idx == 0:
                     request_srv.isPickup = True
                     request_srv.deliveryItemIndex = 5
-                    service_client(request_srv)
+
                 elif idx == 2:
                     request_srv.isPickup = False
                     request_srv.deliveryItemIndex = 5
-                    service_client(request_srv)
+                    
                 # =========== Set ROS msg value =========== #
                 # 1번위치에 도달하면 물품 수령!
                 # if pos == get_1_pos:
@@ -227,11 +230,10 @@ try:
                 # request_srv.isPickup = False
                 # request_srv.deliveryItemIndex = 5
                 
-                print(response_srv.result)
                 first_time = rospy.Time.now()
                 while rospy.Time.now().to_sec() - first_time.to_sec() < 1.0:
                     wheel_vel_cmd_pub.publish(vel_data)
-                if (idx == 0 or idx == 2) and response_srv.result:
+                if (idx == 0 or idx == 2) and len(Item_list) == 1:
                     response_flag = True
                 # if (idx == 0 or idx == 2):
                 #     response_flag = True
@@ -242,8 +244,8 @@ try:
             else:
                 vel_data.Target_linear_velocity = linear_velocity
                 vel_data.Target_angular_velocity = -angular_velocity
-            
-                wheel_vel_cmd_pub.publish(vel_data)
+            service_client(request_srv)
+            wheel_vel_cmd_pub.publish(vel_data)
 
             if goal_to_current_pos_distance <= 0.2:
                 cnt_waypoint += 1

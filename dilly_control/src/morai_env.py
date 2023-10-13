@@ -1,4 +1,4 @@
-#!/home/ubuntu/anaconda3/envs/WOOWA/bin/python3
+#!/home/wonyeol/anaconda3/envs/morai/bin/python3
 
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
@@ -22,7 +22,7 @@ from pyproj import Proj, transform
 
 
 class Env():
-    def __init__(self, get_list, send_list, action_dim=2):
+    def __init__(self, action_dim=2):
         # rospy.init_node('Robot_control_node', anonymous=True)
 
         self.lidar_pub = rospy.Publisher('/velodyne_distance', Float32MultiArray, queue_size=10)  # 수정: Float32 메시지 사용
@@ -35,9 +35,7 @@ class Env():
         self.target_height = 0.3      # 정확히 30cm 높이에 있는 포인트만 선택
         self.action_dim = action_dim
         self.heading = 0
-        self.mission_get_list = get_list
-        self.mission_send_list = send_list
-        self.goal_list = pd.read_csv('/home/icas/woowa/src/dilly_control/src/waypoints/sampled/interval/1.0m/Startto5box.csv')
+        self.goal_list = pd.read_csv('/home/wonyeol/catkin_ws/src/dilly_control/src/waypoints/sampled/interval/test/a.csv')
         self.goal_x = self.goal_list['X'].values.tolist()
         self.goal_y = self.goal_list['Y'].values.tolist()
         self.proj_UTMK = Proj(init='epsg:5178')
@@ -83,7 +81,7 @@ class Env():
 
         return goal_distance
 
-    def target_to_distance(self, current_pos, target_pos):
+    def mission_to_distance(self, current_pos, target_pos):
         dily_to_target_distance = np.sqrt(np.square(current_pos - target_pos).sum())
         return dily_to_target_distance
         
@@ -230,7 +228,7 @@ class Env():
     def get_current_pos(self):
         return (self.position_x, self.position_y)
     
-    def waypoint_driving_test(self, current_pos_x, current_pos_y, goal_x, goal_y):
+    def get_angvel_and_goaldist(self, current_pos_x, current_pos_y, goal_x, goal_y):
         # position_x, position_y = self.gps_manager.getPose()
         # self.position_x, self.position_y = transform(self.proj_WGS84, self.proj_UTMK, position_x, position_y)
         imu_data = self.imu_manager.getIMU()
