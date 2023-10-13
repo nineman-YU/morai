@@ -127,25 +127,6 @@ response_srv = DillyCmdResponse()
 #     finish_flag = True
 #     return finish_flag
 
-# 초기 상태 및 공분산 행렬 설정
-initial_state = np.array([0, 0])  # 초기 상태 [x, y]
-initial_covariance = np.diag([1, 1])  # 초기 공분산 행렬
-
-# 프로세스 노이즈 및 측정 노이즈 공분산 행렬 설정
-process_noise = np.diag([0.1, 0.1])  # 프로세스 노이즈 공분산
-measurement_noise = np.diag([1, 1])  # 측정 노이즈 공분산
-
-# 상태 전이 행렬과 관측 행렬 설정 (이 값들은 GPS 데이터에 따라 조절해야 함)
-A = np.array([[1, 1], [0, 1]])  # 상태 전이 행렬
-H = np.array([[1, 0], [0, 1]])  # 관측 행렬
-
-# 칼만 필터 초기화
-
-
-state = initial_state
-covariance = initial_covariance
-
-
 def get_angvel_and_goaldist(current_pos_x, current_pos_y, goal_x, goal_y):
     # position_x, position_y = self.gps_manager.getPose()
     # self.position_x, self.position_y = transform(self.proj_WGS84, self.proj_UTMK, position_x, position_y)
@@ -215,7 +196,7 @@ def tracking_waypoint(file_name, idx):
     
     gps_noise_info_x = 0
     gps_noise_info_y = 0
-    
+
     gt_x_2 = 967145.48993318
     gt_y_2 = 1935340.43417661
 
@@ -528,18 +509,20 @@ def smooth_moving():
         wheel_vel_cmd_pub.publish(vel_data)
 
 waypoint_file_name = sorted(glob.glob('/home/wonyeol/catkin_ws/src/dilly_control/src/waypoints/waypoint_with_noise/*.csv'))
+go_to_inside = waypoint_file_name[-1]
+waypoint_file_name.pop(-1)
 #print(waypoint_file_name)
 
 back_moving_list = [0, 4, 5, 10, 11]
 forward_moving_list = [2, 7, 8, 13]
 for idx, file_name in enumerate(waypoint_file_name):
-
-    tracking_waypoint(file_name, idx)
-    if idx in back_moving_list:
-        back_moving()
-    elif idx in forward_moving_list:
-        front_moving()
-        smooth_moving()
+    if idx > 3:
+        tracking_waypoint(file_name, idx)
+        if idx in back_moving_list:
+            back_moving()
+        elif idx in forward_moving_list:
+            front_moving()
+            tracking_waypoint(go_to_inside, 50)
 
 
 
